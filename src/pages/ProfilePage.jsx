@@ -31,7 +31,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: 3,
-    maxWidth: 600
+    maxWidth: 1500
   },
   cardContent: {
     p: 3
