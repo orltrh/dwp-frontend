@@ -1,0 +1,181 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "budisukadonat",
+      "password": "budi123",
+      "customerId": 1
+    }
+  ],
+  "customers": [
+    {
+      "id": "1",
+      "name": "Budi Santoso",
+      "phone": "0812-3456-7890",
+      "email": "budi@email.com",
+      "address": "Malang, Jawa Timur",
+      "quota_remaining": "2.5 GB",
+      "active_package": "Paket 5GB",
+      "quota_expires_days": 12,
+      "balance": 12000
+    }
+  ],
+  "packages": [
+    {
+      "id": "1",
+      "name": "Paket Harian 1GB",
+      "category": "Harian",
+      "price": 5000,
+      "quota": "1GB",
+      "duration_days": 1,
+      "description": "Kuota 1GB berlaku 1 hari"
+    },
+    {
+      "id": "2",
+      "name": "Paket Mingguan 5GB",
+      "category": "Mingguan",
+      "price": 25000,
+      "quota": "5GB",
+      "duration_days": 7,
+      "description": "Kuota 5GB berlaku 7 hari"
+    },
+    {
+      "id": "3",
+      "name": "Paket Bulanan 20GB",
+      "category": "Bulanan",
+      "price": 75000,
+      "quota": "20GB",
+      "duration_days": 30,
+      "description": "Kuota 20GB berlaku 30 hari"
+    },
+    {
+      "id": "4",
+      "name": "Paket Unlimited",
+      "category": "Unlimited",
+      "price": 150000,
+      "quota": "Unlimited",
+      "duration_days": 30,
+      "description": "Kuota unlimited berlaku 30 hari"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "1",
+      "customerId": 1,
+      "packageId": "4",
+      "packageName": "Paket Unlimited",
+      "price": 150000,
+      "date": "2026-04-15",
+      "status": "success"
+    },
+    {
+      "id": "2",
+      "customerId": 1,
+      "packageId": "2",
+      "packageName": "Paket Mingguan 5GB",
+      "price": 25000,
+      "date": "2026-04-08",
+      "status": "success"
+    },
+    {
+      "id": "3",
+      "customerId": 1,
+      "packageId": "1",
+      "packageName": "Paket Harian 1GB",
+      "price": 5000,
+      "date": "2026-04-01",
+      "status": "success"
+    },
+    {
+      "id": "4",
+      "customerId": 1,
+      "packageId": "3",
+      "packageName": "Paket Bulanan 20GB",
+      "price": 75000,
+      "date": "2026-03-20",
+      "status": "success"
+    },
+    {
+      "id": "5",
+      "customerId": 1,
+      "packageId": "1",
+      "packageName": "Paket Harian 1GB",
+      "price": 5000,
+      "date": "2026-03-14",
+      "status": "success"
+    },
+    {
+      "id": "6",
+      "customerId": 1,
+      "packageId": "2",
+      "packageName": "Paket Mingguan 5GB",
+      "price": 25000,
+      "date": "2026-03-07",
+      "status": "pending"
+    },
+    {
+      "id": "7",
+      "customerId": 1,
+      "packageId": "4",
+      "packageName": "Paket Unlimited",
+      "price": 150000,
+      "date": "2026-02-28",
+      "status": "success"
+    },
+    {
+      "id": "8",
+      "customerId": 1,
+      "packageId": "1",
+      "packageName": "Paket Harian 1GB",
+      "price": 5000,
+      "date": "2026-02-20",
+      "status": "success"
+    },
+    {
+      "id": "9",
+      "customerId": 1,
+      "packageId": "3",
+      "packageName": "Paket Bulanan 20GB",
+      "price": 75000,
+      "date": "2026-02-10",
+      "status": "success"
+    },
+    {
+      "id": "10",
+      "customerId": 1,
+      "packageId": "2",
+      "packageName": "Paket Mingguan 5GB",
+      "price": 25000,
+      "date": "2026-01-25",
+      "status": "success"
+    },
+    {
+      "id": "11",
+      "customerId": 1,
+      "packageId": "1",
+      "packageName": "Paket Harian 1GB",
+      "price": 5000,
+      "date": "2026-01-15",
+      "status": "success"
+    },
+    {
+      "id": "12",
+      "customerId": 1,
+      "packageId": "4",
+      "packageName": "Paket Unlimited",
+      "price": 150000,
+      "date": "2026-01-02",
+      "status": "success"
+    },
+    {
+      "customerId": 1,
+      "packageId": "2",
+      "packageName": "Paket Mingguan 5GB",
+      "price": 25000,
+      "date": "2026-04-17",
+      "status": "success",
+      "id": "iKonhQDhPR4"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
