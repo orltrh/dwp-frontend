@@ -29,6 +29,73 @@ const NAV_ITEMS = [
   { label: "Profil", icon: <Person />, path: "/profile" }
 ]
 
+const styles = {
+  root: {
+    minHeight: "100vh",
+    bgcolor: "background.default"
+  },
+  appBar: {
+    bgcolor: "rgba(255,255,255,0.92)",
+    backdropFilter: "blur(8px)",
+    boxShadow: "0 1px 0 #F0E6DC"
+  },
+  toolbar: {
+    justifyContent: "space-between"
+  },
+  brand: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1
+  },
+  navBox: {
+    display: "flex",
+    gap: 0.5
+  },
+  navBtn: (isActive) => ({
+    color: isActive ? "primary.main" : "text.secondary",
+    fontWeight: isActive ? 700 : 400,
+    borderBottom: isActive ? "2px solid" : "2px solid transparent",
+    borderRadius: 0,
+    px: 2,
+    pb: "6px"
+  }),
+  actions: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+    bgcolor: "primary.main",
+    fontSize: 14,
+    fontWeight: 700,
+    cursor: "pointer"
+  },
+  logoutBtn: {
+    bgcolor: "#D32F2F",
+    color: "#fff",
+    borderRadius: 100,
+    fontSize: 12,
+    px: 2,
+    "&:hover": { bgcolor: "#B71C1C" }
+  },
+  contentBox: (isMobile) => ({
+    maxWidth: 1200,
+    mx: "auto",
+    px: { xs: 2, md: 4 },
+    py: { xs: 2, md: 3 },
+    pb: isMobile ? 10 : 3
+  }),
+  bottomNavPaper: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000
+  }
+}
+
 const Layout = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
@@ -46,27 +113,20 @@ const Layout = () => {
   )
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+    <Box sx={styles.root}>
 
       {!isMobile && (
-        <AppBar
-          position="sticky"
-          sx={{
-            bgcolor: "rgba(255,255,255,0.92)",
-            backdropFilter: "blur(8px)",
-            boxShadow: "0 1px 0 #F0E6DC"
-          }}
-        >
-          <Toolbar sx={{ justifyContent: "space-between" }}>
+        <AppBar position="sticky" sx={styles.appBar}>
+          <Toolbar sx={styles.toolbar}>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box sx={styles.brand}>
               <WifiTethering sx={{ color: "primary.main" }} />
               <Typography variant="h6" fontWeight={700} color="primary.main">
                 DataKu
               </Typography>
             </Box>
 
-            <Box sx={{ display: "flex", gap: 0.5 }}>
+            <Box sx={styles.navBox}>
               {NAV_ITEMS.map((item) => {
                 const isActive = location.pathname === item.path
                 return (
@@ -74,14 +134,7 @@ const Layout = () => {
                     key={item.path}
                     onClick={() => navigate(item.path)}
                     startIcon={item.icon}
-                    sx={{
-                      color: isActive ? "primary.main" : "text.secondary",
-                      fontWeight: isActive ? 700 : 400,
-                      borderBottom: isActive ? "2px solid" : "2px solid transparent",
-                      borderRadius: 0,
-                      px: 2,
-                      pb: "6px"
-                    }}
+                    sx={styles.navBtn(isActive)}
                   >
                     {item.label}
                   </Button>
@@ -89,31 +142,15 @@ const Layout = () => {
               })}
             </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Avatar
-                sx={{
-                  width: 36,
-                  height: 36,
-                  bgcolor: "primary.main",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  cursor: "pointer"
-                }}
-              >
+            <Box sx={styles.actions}>
+              <Avatar sx={styles.avatar}>
                 {user?.username?.[0]?.toUpperCase()}
               </Avatar>
               <Button
                 onClick={handleLogout}
                 size="small"
                 variant="contained"
-                sx={{
-                  bgcolor: "#D32F2F",
-                  color: "#fff",
-                  borderRadius: 100,
-                  fontSize: 12,
-                  px: 2,
-                  "&:hover": { bgcolor: "#B71C1C" }
-                }}
+                sx={styles.logoutBtn}
               >
                 Keluar
               </Button>
@@ -123,27 +160,12 @@ const Layout = () => {
         </AppBar>
       )}
 
-      <Box sx={{
-        maxWidth: 1200,
-        mx: "auto",
-        px: { xs: 2, md: 4 },
-        py: { xs: 2, md: 3 },
-        pb: isMobile ? 10 : 3
-      }}>
+      <Box sx={styles.contentBox(isMobile)}>
         <Outlet />
       </Box>
 
       {isMobile && (
-        <Paper
-          elevation={0}
-          sx={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 1000
-          }}
-        >
+        <Paper elevation={0} sx={styles.bottomNavPaper}>
           <BottomNavigation
             value={activeIndex}
             onChange={(e, newIndex) => navigate(NAV_ITEMS[newIndex].path)}

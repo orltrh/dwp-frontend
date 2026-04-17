@@ -23,6 +23,34 @@ import { API_BASE } from "../config/api"
 import BuyPackageModal from "../components/BuyPackageModal"
 
 const styles = {
+  pageRoot: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 3
+  },
+  errorBox: {
+    textAlign: "center",
+    py: 8
+  },
+  loadingBox: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2
+  },
+  filterRow: {
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 2,
+    flexWrap: "wrap"
+  },
+  toggleGroup: {
+    flexWrap: "wrap",
+    gap: 1
+  },
+  sortSelect: {
+    minWidth: 160
+  },
   packageCard: {
     border: "1px solid #F0E6DC",
     borderRadius: 3,
@@ -37,6 +65,12 @@ const styles = {
       borderLeft: "3px solid #E65100"
     }
   },
+  cardContent: {
+    p: 2.5,
+    display: "flex",
+    flexDirection: "column",
+    flex: 1
+  },
   categoryChip: {
     bgcolor: "#FFF3E0",
     color: "primary.main",
@@ -44,6 +78,12 @@ const styles = {
     mb: 1.5,
     alignSelf: "flex-start",
     fontSize: 11
+  },
+  pkgDescription: {
+    flex: 1,
+    mb: 2,
+    fontSize: 13,
+    lineHeight: 1.5
   },
   quotaBadge: {
     display: "flex",
@@ -55,21 +95,15 @@ const styles = {
     borderRadius: 2,
     border: "1px solid #F0E6DC"
   },
+  checkIcon: {
+    fontSize: 15,
+    color: "#2E7D32"
+  },
   emptyState: {
     textAlign: "center",
     py: 6,
     border: "1px dashed #F0E6DC",
     borderRadius: 3
-  },
-  filterRow: {
-    display: "flex",
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    gap: 2,
-    flexWrap: "wrap"
-  },
-  sortSelect: {
-    minWidth: 160
   }
 }
 
@@ -124,7 +158,7 @@ const PackagesPage = () => {
 
   if (error) {
     return (
-      <Box sx={{ textAlign: "center", py: 8 }}>
+      <Box sx={styles.errorBox}>
         <Typography color="error" variant="body2">{error}</Typography>
       </Box>
     )
@@ -132,7 +166,7 @@ const PackagesPage = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={styles.loadingBox}>
         <Skeleton variant="rounded" height={48} width={320} />
         <Grid container spacing={2}>
           {[1, 2, 3, 4].map((i) => (
@@ -146,7 +180,7 @@ const PackagesPage = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+    <Box sx={styles.pageRoot}>
 
       <Box>
         <Typography variant="h6" fontWeight={700}>Pilih Paket Data</Typography>
@@ -160,7 +194,7 @@ const PackagesPage = () => {
           value={category}
           exclusive
           onChange={(e, val) => val && setCategory(val)}
-          sx={{ flexWrap: "wrap", gap: 1 }}
+          sx={styles.toggleGroup}
         >
           {categories.map((cat) => (
             <ToggleButton key={cat} value={cat} size="small">{cat}</ToggleButton>
@@ -185,16 +219,16 @@ const PackagesPage = () => {
         {filtered.map((pkg) => (
           <Grid size={{ xs: 12, sm: 6, md: 3 }} key={pkg.id}>
             <Card elevation={0} sx={styles.packageCard}>
-              <CardContent sx={{ p: 2.5, display: "flex", flexDirection: "column", flex: 1 }}>
+              <CardContent sx={styles.cardContent}>
                 <Chip label={pkg.category} size="small" sx={styles.categoryChip} />
                 <Typography variant="subtitle1" fontWeight={700} gutterBottom>
                   {pkg.name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ flex: 1, mb: 2, fontSize: 13, lineHeight: 1.5 }}>
+                <Typography variant="body2" color="text.secondary" sx={styles.pkgDescription}>
                   {pkg.description}
                 </Typography>
                 <Box sx={styles.quotaBadge}>
-                  <CheckCircle sx={{ fontSize: 15, color: "#2E7D32" }} />
+                  <CheckCircle sx={styles.checkIcon} />
                   <Typography variant="caption" color="text.secondary" fontWeight={500}>
                     {pkg.quota} · {pkg.duration_days} hari
                   </Typography>

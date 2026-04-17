@@ -30,6 +30,57 @@ import BuyPackageModal from "../components/BuyPackageModal"
 const CARD_MIN_HEIGHT = 180
 
 const styles = {
+  pageRoot: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 3
+  },
+  errorBox: {
+    textAlign: "center",
+    py: 8
+  },
+  loadingBox: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2
+  },
+  greetingCard: {
+    background: "linear-gradient(135deg, #fff 60%, #FFF3E0 100%)",
+    border: "1px solid #F0E6DC",
+    borderRadius: 3,
+    p: 2.5,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    transition: "box-shadow 0.2s",
+    "&:hover": { boxShadow: "0 4px 20px rgba(230,81,0,0.08)" }
+  },
+  greetingContent: {
+    display: "flex",
+    alignItems: "center",
+    gap: 2
+  },
+  greetingAvatar: {
+    width: 52,
+    height: 52,
+    borderRadius: "50%",
+    background: "linear-gradient(135deg, #E65100, #FF8F00)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0
+  },
+  greetingPhone: {
+    display: "flex",
+    alignItems: "center",
+    gap: 0.5,
+    mt: 0.25
+  },
+  activeChip: {
+    bgcolor: "#E8F5E9",
+    color: "#2E7D32",
+    fontWeight: 600
+  },
   gradientCard: {
     background: "linear-gradient(135deg, #E65100 0%, #FF8F00 100%)",
     borderRadius: 3,
@@ -59,6 +110,23 @@ const styles = {
     gap: 1,
     mb: 1.5
   },
+  cardIcon: {
+    color: "rgba(255,255,255,0.85)",
+    fontSize: 18
+  },
+  cardLabel: {
+    color: "rgba(255,255,255,0.85)",
+    fontWeight: 500
+  },
+  cardValue: {
+    color: "#fff",
+    mb: 0.5,
+    letterSpacing: "-1px"
+  },
+  cardSubtitle: {
+    color: "rgba(255,255,255,0.7)",
+    mb: 2.5
+  },
   cardWhiteBtn: {
     bgcolor: "#FFFFFF",
     color: "primary.main",
@@ -74,6 +142,10 @@ const styles = {
     alignItems: "center",
     mb: 2
   },
+  seeAllBtn: {
+    color: "primary.main",
+    fontSize: 12
+  },
   packageCard: {
     border: "1px solid #F0E6DC",
     borderRadius: 3,
@@ -86,6 +158,12 @@ const styles = {
       borderLeft: "3px solid #E65100"
     }
   },
+  packageCardContent: {
+    p: 2.5,
+    display: "flex",
+    flexDirection: "column",
+    height: "100%"
+  },
   categoryChip: {
     bgcolor: "#FFF3E0",
     color: "primary.main",
@@ -94,26 +172,10 @@ const styles = {
     alignSelf: "flex-start",
     fontSize: 11
   },
-  txCard: {
-    border: "1px solid #F0E6DC",
-    borderRadius: 3,
-    transition: "box-shadow 0.2s",
-    "&:hover": { boxShadow: "0 2px 12px rgba(230,81,0,0.08)" }
-  },
-  emptyState: {
-    textAlign: "center",
-    py: 5,
-    border: "1px dashed #F0E6DC",
-    borderRadius: 3,
-    bgcolor: "#fff"
-  },
-  successChip: {
-    bgcolor: "#E8F5E9",
-    color: "#2E7D32",
-    fontWeight: 600,
-    height: 20,
-    fontSize: 11,
-    mt: 0.5
+  packageDesc: {
+    flex: 1,
+    mb: 1.5,
+    fontSize: 12
   },
   lastPackageCard: {
     background: "linear-gradient(135deg, #FFF3E0, #FFFAF7)",
@@ -134,11 +196,56 @@ const styles = {
     justifyContent: "center",
     flexShrink: 0
   },
-  greetingCard: {
+  lastCategoryChip: {
+    bgcolor: "#FFF3E0",
+    color: "primary.main",
+    fontWeight: 600,
+    mb: 0.5,
+    alignSelf: "flex-start",
+    fontSize: 11
+  },
+  txCard: {
+    border: "1px solid #F0E6DC",
+    borderRadius: 3,
     transition: "box-shadow 0.2s",
-    "&:hover": {
-      boxShadow: "0 4px 20px rgba(230,81,0,0.08)"
-    }
+    "&:hover": { boxShadow: "0 2px 12px rgba(230,81,0,0.08)" }
+  },
+  txCardContent: {
+    p: 2,
+    "&:last-child": { pb: 2 }
+  },
+  txCardRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  txRight: {
+    textAlign: "right"
+  },
+  txList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1.5
+  },
+  emptyState: {
+    textAlign: "center",
+    py: 5,
+    border: "1px dashed #F0E6DC",
+    borderRadius: 3,
+    bgcolor: "#fff"
+  },
+  emptyStateBtn: {
+    color: "primary.main",
+    mt: 1,
+    fontSize: 12
+  },
+  successChip: {
+    bgcolor: "#E8F5E9",
+    color: "#2E7D32",
+    fontWeight: 600,
+    height: 20,
+    fontSize: 11,
+    mt: 0.5
   }
 }
 
@@ -155,23 +262,23 @@ const DashboardPage = () => {
   const [error, setError] = useState(null)
 
   const fetchTransactions = async () => {
-    const txRes = await fetch(`${API_BASE}/transactions?customerId=${user.customerId}`)
-    const txData = await txRes.json()
-    return txData.sort((a, b) => new Date(b.date) - new Date(a.date))
+    const res = await fetch(`${API_BASE}/transactions?customerId=${user.customerId}`)
+    const data = await res.json()
+    return data.sort((a, b) => new Date(b.date) - new Date(a.date))
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [pkgRes, txData] = await Promise.all([
+        const [pkgData, txData] = await Promise.all([
           fetch(`${API_BASE}/packages`).then((r) => r.json()),
           fetchTransactions()
         ])
 
         const pkgMap = {}
-        pkgRes.forEach((p) => { pkgMap[p.id] = p })
+        pkgData.forEach((p) => { pkgMap[p.id] = p })
 
-        setPackages(pkgRes.slice(0, 3))
+        setPackages(pkgData.slice(0, 3))
         setTransactions(txData.slice(0, 3))
         setLastPackage(pkgMap[txData[0]?.packageId] || null)
       } catch (err) {
@@ -195,7 +302,7 @@ const DashboardPage = () => {
 
   if (error) {
     return (
-      <Box sx={{ textAlign: "center", py: 8 }}>
+      <Box sx={styles.errorBox}>
         <Typography color="error" variant="body2">{error}</Typography>
       </Box>
     )
@@ -203,7 +310,7 @@ const DashboardPage = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={styles.loadingBox}>
         <Skeleton variant="rounded" height={40} width={200} />
         <Skeleton variant="rounded" height={160} />
         <Skeleton variant="rounded" height={220} />
@@ -213,34 +320,11 @@ const DashboardPage = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+    <Box sx={styles.pageRoot}>
 
-      <Card
-        elevation={0}
-        sx={{
-          ...styles.greetingCard,
-          background: "linear-gradient(135deg, #fff 60%, #FFF3E0 100%)",
-          border: "1px solid #F0E6DC",
-          borderRadius: 3,
-          p: 2.5,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between"
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Box
-            sx={{
-              width: 52,
-              height: 52,
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, #E65100, #FF8F00)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0
-            }}
-          >
+      <Card elevation={0} sx={styles.greetingCard}>
+        <Box sx={styles.greetingContent}>
+          <Box sx={styles.greetingAvatar}>
             <Typography variant="h6" fontWeight={700} sx={{ color: "#fff" }}>
               {customer?.name?.charAt(0).toUpperCase()}
             </Typography>
@@ -252,7 +336,7 @@ const DashboardPage = () => {
             <Typography variant="h6" fontWeight={700} sx={{ color: "#1A1A1A" }}>
               {customer?.name}
             </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.25 }}>
+            <Box sx={styles.greetingPhone}>
               <PhoneAndroid sx={{ fontSize: 13, color: "text.secondary" }} />
               <Typography variant="caption" color="text.secondary">
                 {customer?.phone}
@@ -260,13 +344,7 @@ const DashboardPage = () => {
             </Box>
           </Box>
         </Box>
-        <Box sx={{ textAlign: "right" }}>
-          <Chip
-            label="Aktif"
-            size="small"
-            sx={{ bgcolor: "#E8F5E9", color: "#2E7D32", fontWeight: 600 }}
-          />
-        </Box>
+        <Chip label="Aktif" size="small" sx={styles.activeChip} />
       </Card>
 
       <Grid container spacing={2}>
@@ -275,15 +353,13 @@ const DashboardPage = () => {
             <Box sx={styles.decorativeCircle} />
             <Box sx={styles.cardInner}>
               <Box sx={styles.cardIconRow}>
-                <DataUsage sx={{ color: "rgba(255,255,255,0.85)", fontSize: 18 }} />
-                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.85)", fontWeight: 500 }}>
-                  Kuota Aktif
-                </Typography>
+                <DataUsage sx={styles.cardIcon} />
+                <Typography variant="body2" sx={styles.cardLabel}>Kuota Aktif</Typography>
               </Box>
-              <Typography variant="h3" fontWeight={700} sx={{ color: "#fff", mb: 0.5, letterSpacing: "-1px" }}>
+              <Typography variant="h3" fontWeight={700} sx={styles.cardValue}>
                 {customer?.quota_remaining}
               </Typography>
-              <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", mb: 2.5 }}>
+              <Typography variant="body2" sx={styles.cardSubtitle}>
                 {customer?.active_package} · {customer?.quota_expires_days} hari lagi
               </Typography>
               <Button
@@ -303,18 +379,20 @@ const DashboardPage = () => {
             <Box sx={styles.decorativeCircle} />
             <Box sx={styles.cardInner}>
               <Box sx={styles.cardIconRow}>
-                <AccountBalanceWallet sx={{ color: "rgba(255,255,255,0.85)", fontSize: 18 }} />
-                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.85)", fontWeight: 500 }}>
-                  Sisa Pulsa
-                </Typography>
+                <AccountBalanceWallet sx={styles.cardIcon} />
+                <Typography variant="body2" sx={styles.cardLabel}>Sisa Pulsa</Typography>
               </Box>
-              <Typography variant="h3" fontWeight={700} sx={{ color: "#fff", mb: 0.5, letterSpacing: "-1px" }}>
+              <Typography variant="h3" fontWeight={700} sx={styles.cardValue}>
                 {formatPrice(customer?.balance)}
               </Typography>
-              <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", mb: 2.5 }}>
+              <Typography variant="body2" sx={styles.cardSubtitle}>
                 Pulsa reguler
               </Typography>
-              <Button size="small" startIcon={<Add sx={{ fontSize: 14 }} />} sx={styles.cardWhiteBtn}>
+              <Button
+                size="small"
+                startIcon={<Add sx={{ fontSize: 14 }} />}
+                sx={styles.cardWhiteBtn}
+              >
                 Isi Pulsa
               </Button>
             </Box>
@@ -323,7 +401,7 @@ const DashboardPage = () => {
       </Grid>
 
       {lastPackage && (
-        <Box >
+        <Box>
           <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.5 }}>
             Beli Lagi
           </Typography>
@@ -332,7 +410,7 @@ const DashboardPage = () => {
               <Replay sx={{ fontSize: 20, color: "primary.main" }} />
             </Box>
             <Box sx={{ flex: 1 }}>
-              <Chip label={lastPackage.category} size="medium" sx={{ ...styles.categoryChip, mb: 0.5 }} />
+              <Chip label={lastPackage.category} size="small" sx={styles.lastCategoryChip} />
               <Typography variant="subtitle2" fontWeight={700}>{lastPackage.name}</Typography>
               <Typography variant="caption" color="text.secondary">
                 {lastPackage.quota} · {lastPackage.duration_days} hari · {formatPrice(lastPackage.price)}
@@ -357,7 +435,7 @@ const DashboardPage = () => {
             endIcon={<ArrowForward sx={{ fontSize: 14 }} />}
             size="small"
             onClick={() => navigate("/packages")}
-            sx={{ color: "primary.main", fontSize: 12 }}
+            sx={styles.seeAllBtn}
           >
             Lihat Semua
           </Button>
@@ -367,23 +445,18 @@ const DashboardPage = () => {
           {packages.map((pkg) => (
             <Grid size={{ xs: 12, sm: 4 }} key={pkg.id}>
               <Card elevation={0} sx={styles.packageCard}>
-                <CardContent sx={{ p: 2.5, display: "flex", flexDirection: "column", height: "100%" }}>
+                <CardContent sx={styles.packageCardContent}>
                   <Chip label={pkg.category} size="small" sx={styles.categoryChip} />
                   <Typography variant="subtitle2" fontWeight={700} gutterBottom>
                     {pkg.name}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ flex: 1, mb: 1.5, fontSize: 12 }}>
+                  <Typography variant="body2" color="text.secondary" sx={styles.packageDesc}>
                     {pkg.quota} · {pkg.duration_days} hari
                   </Typography>
                   <Typography variant="h6" fontWeight={700} color="primary.main" sx={{ mb: 1.5 }}>
                     {formatPrice(pkg.price)}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    size="small"
-                    onClick={() => setSelectedPackage(pkg)}
-                  >
+                  <Button variant="contained" fullWidth size="small" onClick={() => setSelectedPackage(pkg)}>
                     Beli
                   </Button>
                 </CardContent>
@@ -400,13 +473,13 @@ const DashboardPage = () => {
             endIcon={<ArrowForward sx={{ fontSize: 14 }} />}
             size="small"
             onClick={() => navigate("/transactions")}
-            sx={{ color: "primary.main", fontSize: 12 }}
+            sx={styles.seeAllBtn}
           >
             Lihat Semua
           </Button>
         </Box>
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+        <Box sx={styles.txList}>
           {transactions.length === 0 ? (
             <Box sx={styles.emptyState}>
               <Typography variant="body2" color="text.secondary">
@@ -416,7 +489,7 @@ const DashboardPage = () => {
                 variant="text"
                 size="small"
                 onClick={() => navigate("/packages")}
-                sx={{ color: "primary.main", mt: 1, fontSize: 12 }}
+                sx={styles.emptyStateBtn}
               >
                 Beli paket pertamamu
               </Button>
@@ -424,13 +497,13 @@ const DashboardPage = () => {
           ) : (
             transactions.map((tx) => (
               <Card key={tx.id} elevation={0} sx={styles.txCard}>
-                <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <CardContent sx={styles.txCardContent}>
+                  <Box sx={styles.txCardRow}>
                     <Box>
                       <Typography variant="subtitle2" fontWeight={600}>{tx.packageName}</Typography>
                       <Typography variant="caption" color="text.secondary">{formatDate(tx.date)}</Typography>
                     </Box>
-                    <Box sx={{ textAlign: "right" }}>
+                    <Box sx={styles.txRight}>
                       <Typography variant="subtitle2" fontWeight={700} color="primary.main">
                         {formatPrice(tx.price)}
                       </Typography>

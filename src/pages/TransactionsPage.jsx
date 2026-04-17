@@ -18,6 +18,29 @@ import { formatPrice, formatDate } from "../utils/format"
 import { API_BASE } from "../config/api"
 
 const styles = {
+  pageRoot: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 3
+  },
+  errorBox: {
+    textAlign: "center",
+    py: 8
+  },
+  loadingBox: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2
+  },
+  toggleGroup: {
+    flexWrap: "wrap",
+    gap: 1
+  },
+  txList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1.5
+  },
   txCard: {
     border: "1px solid #F0E6DC",
     borderLeft: "3px solid #E65100",
@@ -27,6 +50,10 @@ const styles = {
       boxShadow: "0 4px 16px rgba(230,81,0,0.08)",
       transform: "translateY(-1px)"
     }
+  },
+  txCardContent: {
+    p: 2.5,
+    "&:last-child": { pb: 2.5 }
   },
   txRow: {
     display: "flex",
@@ -47,6 +74,12 @@ const styles = {
     gap: 0.75,
     flexShrink: 0
   },
+  categoryRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+    mt: 0.25
+  },
   categoryChip: {
     bgcolor: "#FFF3E0",
     color: "primary.main",
@@ -54,16 +87,23 @@ const styles = {
     height: 20,
     fontSize: 11
   },
+  metaRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 0.5
+  },
+  metaIcon: {
+    fontSize: 12,
+    color: "text.disabled"
+  },
+  chipIcon: {
+    fontSize: "12px !important"
+  },
   emptyState: {
     textAlign: "center",
     py: 6,
     border: "1px dashed #F0E6DC",
     borderRadius: 3
-  },
-  metaRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: 0.5
   }
 }
 
@@ -135,7 +175,7 @@ const TransactionsPage = () => {
 
   if (error) {
     return (
-      <Box sx={{ textAlign: "center", py: 8 }}>
+      <Box sx={styles.errorBox}>
         <Typography color="error" variant="body2">{error}</Typography>
       </Box>
     )
@@ -143,7 +183,7 @@ const TransactionsPage = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={styles.loadingBox}>
         <Skeleton variant="rounded" height={48} width={320} />
         {[1, 2, 3, 4].map((i) => (
           <Skeleton key={i} variant="rounded" height={90} />
@@ -153,7 +193,7 @@ const TransactionsPage = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+    <Box sx={styles.pageRoot}>
 
       <Box>
         <Typography variant="h6" fontWeight={700}>Riwayat Transaksi</Typography>
@@ -166,14 +206,14 @@ const TransactionsPage = () => {
         value={filter}
         exclusive
         onChange={(e, val) => val && setFilter(val)}
-        sx={{ flexWrap: "wrap", gap: 1 }}
+        sx={styles.toggleGroup}
       >
         {filters.map((f) => (
           <ToggleButton key={f} value={f} size="small">{f}</ToggleButton>
         ))}
       </ToggleButtonGroup>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <Box sx={styles.txList}>
         {filtered.length === 0 && (
           <Box sx={styles.emptyState}>
             <Typography variant="body2" color="text.secondary">
@@ -188,12 +228,12 @@ const TransactionsPage = () => {
 
           return (
             <Card key={tx.id} elevation={0} sx={styles.txCard}>
-              <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
+              <CardContent sx={styles.txCardContent}>
                 <Box sx={styles.txRow}>
                   <Box sx={styles.txLeft}>
                     <Typography variant="subtitle2" fontWeight={700}>{tx.packageName}</Typography>
                     <Typography variant="caption" color="text.secondary">{formatDate(tx.date)}</Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.25 }}>
+                    <Box sx={styles.categoryRow}>
                       {tx.package?.category && (
                         <Chip label={tx.package.category} size="small" sx={styles.categoryChip} />
                       )}
@@ -205,13 +245,13 @@ const TransactionsPage = () => {
                     </Box>
                     {phone && (
                       <Box sx={styles.metaRow}>
-                        <PhoneAndroid sx={{ fontSize: 12, color: "text.disabled" }} />
+                        <PhoneAndroid sx={styles.metaIcon} />
                         <Typography variant="caption" color="text.disabled">{phone}</Typography>
                       </Box>
                     )}
                     {expiry && (
                       <Box sx={styles.metaRow}>
-                        <CalendarToday sx={{ fontSize: 12, color: "text.disabled" }} />
+                        <CalendarToday sx={styles.metaIcon} />
                         <Typography variant="caption" color="text.disabled">
                           s/d {formatDate(expiry)}
                         </Typography>
@@ -228,8 +268,8 @@ const TransactionsPage = () => {
                       size="small"
                       icon={
                         tx.status === "success"
-                          ? <CheckCircle sx={{ fontSize: "12px !important" }} />
-                          : <Schedule sx={{ fontSize: "12px !important" }} />
+                          ? <CheckCircle sx={styles.chipIcon} />
+                          : <Schedule sx={styles.chipIcon} />
                       }
                       sx={getStatusChipSx(tx.status)}
                     />

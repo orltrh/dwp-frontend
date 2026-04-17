@@ -20,6 +20,12 @@ import { formatPrice, formatDate } from "../utils/format"
 import { API_BASE } from "../config/api"
 
 const styles = {
+  dialogPaper: {
+    borderRadius: 3,
+    p: 1,
+    maxWidth: 480,
+    width: "100%"
+  },
   confirmBox: {
     bgcolor: "#FFFAF7",
     borderRadius: 2,
@@ -31,6 +37,62 @@ const styles = {
     color: "primary.main",
     fontWeight: 600,
     mb: 1
+  },
+  quotaRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 0.75,
+    mt: 1.5
+  },
+  phoneEditBox: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1
+  },
+  phoneEditBtns: {
+    display: "flex",
+    gap: 1
+  },
+  cancelPhoneBtn: {
+    flex: 1,
+    borderColor: "#F0E6DC",
+    color: "text.secondary"
+  },
+  phoneDisplayRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  phoneInfo: {
+    display: "flex",
+    alignItems: "center",
+    gap: 0.75
+  },
+  gantiBtn: {
+    fontSize: 11,
+    color: "primary.main",
+    minWidth: 0,
+    p: "2px 6px"
+  },
+  dialogActions: {
+    px: 3,
+    pb: 2,
+    gap: 1
+  },
+  cancelBtn: {
+    flex: 1,
+    borderColor: "#F0E6DC",
+    color: "text.secondary"
+  },
+  successContent: {
+    textAlign: "center",
+    py: 3,
+    px: 1
+  },
+  successIcon: {
+    fontSize: 72,
+    color: "#2E7D32",
+    mb: 2
   },
   summaryBox: {
     bgcolor: "#FFFAF7",
@@ -44,6 +106,14 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     mb: 1
+  },
+  summaryRowLast: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
+  viewTxBtn: {
+    py: 1.25,
+    mb: 1.5
   }
 }
 
@@ -119,11 +189,7 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      PaperProps={{ sx: { borderRadius: 3, p: 1, maxWidth: 480, width: "100%" } }}
-    >
+    <Dialog open={open} onClose={handleClose} PaperProps={{ sx: styles.dialogPaper }}>
       {step === "confirm" ? (
         <>
           <DialogTitle sx={{ fontWeight: 700 }}>Konfirmasi Pembelian</DialogTitle>
@@ -136,7 +202,7 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
               <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                 {selectedPackage?.description}
               </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mt: 1.5 }}>
+              <Box sx={styles.quotaRow}>
                 <CheckCircle sx={{ fontSize: 15, color: "#2E7D32" }} />
                 <Typography variant="caption" color="text.secondary" fontWeight={500}>
                   {selectedPackage?.quota} · {selectedPackage?.duration_days} hari
@@ -145,7 +211,7 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
 
               <Box sx={{ mt: 1.5 }}>
                 {editingPhone ? (
-                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <Box sx={styles.phoneEditBox}>
                     <TextField
                       label="Nomor HP"
                       size="small"
@@ -162,12 +228,12 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
                         )
                       }}
                     />
-                    <Box sx={{ display: "flex", gap: 1 }}>
+                    <Box sx={styles.phoneEditBtns}>
                       <Button
                         size="small"
                         variant="outlined"
                         onClick={() => { setEditingPhone(false); setPhoneError("") }}
-                        sx={{ flex: 1, borderColor: "#F0E6DC", color: "text.secondary" }}
+                        sx={styles.cancelPhoneBtn}
                       >
                         Batal
                       </Button>
@@ -182,8 +248,8 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
                     </Box>
                   </Box>
                 ) : (
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Box sx={styles.phoneDisplayRow}>
+                    <Box sx={styles.phoneInfo}>
                       <PhoneAndroid sx={{ fontSize: 15, color: "text.secondary" }} />
                       <Typography variant="caption" color="text.secondary" fontWeight={500}>
                         {targetPhone}
@@ -193,7 +259,7 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
                       size="small"
                       variant="text"
                       onClick={() => setEditingPhone(true)}
-                      sx={{ fontSize: 11, color: "primary.main", minWidth: 0, p: "2px 6px" }}
+                      sx={styles.gantiBtn}
                     >
                       Ganti
                     </Button>
@@ -206,12 +272,8 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
               </Typography>
             </Box>
           </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
-            <Button
-              onClick={handleClose}
-              variant="outlined"
-              sx={{ flex: 1, borderColor: "#F0E6DC", color: "text.secondary" }}
-            >
+          <DialogActions sx={styles.dialogActions}>
+            <Button onClick={handleClose} variant="outlined" sx={styles.cancelBtn}>
               Batal
             </Button>
             <Button
@@ -226,8 +288,8 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
         </>
       ) : (
         <DialogContent>
-          <Box sx={{ textAlign: "center", py: 3, px: 1 }}>
-            <CheckCircle sx={{ fontSize: 72, color: "#2E7D32", mb: 2 }} />
+          <Box sx={styles.successContent}>
+            <CheckCircle sx={styles.successIcon} />
             <Typography variant="h6" fontWeight={700} gutterBottom>
               Pembelian Berhasil!
             </Typography>
@@ -256,7 +318,7 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
                   {selectedPackage && formatDate(calcExpiryDate(selectedPackage.duration_days))}
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Box sx={styles.summaryRowLast}>
                 <Typography variant="caption" color="text.secondary">Total</Typography>
                 <Typography variant="caption" fontWeight={700} color="primary.main">
                   {selectedPackage && formatPrice(selectedPackage.price)}
@@ -267,16 +329,11 @@ const BuyPackageModal = ({ open, onClose, selectedPackage, customer, onSuccess }
               variant="contained"
               fullWidth
               onClick={() => { handleClose(); navigate("/transactions") }}
-              sx={{ py: 1.25, mb: 1.5 }}
+              sx={styles.viewTxBtn}
             >
               Lihat Transaksi
             </Button>
-            <Button
-              variant="text"
-              fullWidth
-              onClick={handleClose}
-              sx={{ color: "text.secondary" }}
-            >
+            <Button variant="text" fullWidth onClick={handleClose} sx={{ color: "text.secondary" }}>
               Kembali ke Beranda
             </Button>
           </Box>

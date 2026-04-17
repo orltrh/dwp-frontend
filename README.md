@@ -2,6 +2,8 @@
 
 Aplikasi web e-commerce untuk pembelian paket data internet. Dibangun dengan React + MUI v9, menggunakan json-server sebagai mock API.
 
+> Proyek dikerjakan: **15 April 2026 – 17 April 2026**
+
 ---
 
 ## Teknologi

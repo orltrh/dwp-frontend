@@ -27,6 +27,15 @@ import useCustomer from "../hooks/useCustomer"
 import { API_BASE } from "../config/api"
 
 const styles = {
+  pageRoot: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 3,
+    maxWidth: 600
+  },
+  cardContent: {
+    p: 3
+  },
   avatarBox: {
     width: 80,
     height: 80,
@@ -36,6 +45,21 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0
+  },
+  avatarHeader: {
+    display: "flex",
+    alignItems: "center",
+    gap: 2.5,
+    mb: 3
+  },
+  activeChip: {
+    bgcolor: "#E8F5E9",
+    color: "#2E7D32",
+    fontWeight: 600,
+    mt: 0.75
+  },
+  divider: {
+    borderColor: "#F0E6DC"
   },
   infoRow: {
     display: "flex",
@@ -53,6 +77,52 @@ const styles = {
     justifyContent: "center",
     flexShrink: 0,
     mt: 0.25
+  },
+  phoneRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+    mt: 0.25
+  },
+  readOnlyChip: {
+    fontSize: 10,
+    height: 18,
+    bgcolor: "#F5F5F5",
+    color: "text.secondary"
+  },
+  editBtn: {
+    borderRadius: 100,
+    borderColor: "#F0E6DC",
+    color: "primary.main",
+    fontWeight: 600
+  },
+  editForm: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    mt: 2
+  },
+  formBtns: {
+    display: "flex",
+    gap: 1.5,
+    mt: 1
+  },
+  saveBtn: {
+    borderRadius: 100,
+    flex: 1
+  },
+  cancelEditBtn: {
+    borderRadius: 100,
+    borderColor: "#F0E6DC",
+    color: "text.secondary",
+    flex: 1
+  },
+  logoutBtn: {
+    borderRadius: 100,
+    borderColor: "#FFCDD2",
+    color: "#D32F2F",
+    fontWeight: 600,
+    "&:hover": { bgcolor: "#FFEBEE", borderColor: "#D32F2F" }
   }
 }
 
@@ -81,11 +151,7 @@ const ProfilePage = () => {
       await fetch(`${API_BASE}/customers/${customer.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          address: form.address
-        })
+        body: JSON.stringify({ name: form.name, email: form.email, address: form.address })
       })
       setEditing(false)
       setSuccess(true)
@@ -108,7 +174,7 @@ const ProfilePage = () => {
   if (loading) return null
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3, maxWidth: 1500 }}>
+    <Box sx={styles.pageRoot}>
 
       <Box>
         <Typography variant="h6" fontWeight={700}>Profil Saya</Typography>
@@ -118,8 +184,8 @@ const ProfilePage = () => {
       </Box>
 
       <Card elevation={0}>
-        <CardContent sx={{ p: 3 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2.5, mb: 3 }}>
+        <CardContent sx={styles.cardContent}>
+          <Box sx={styles.avatarHeader}>
             <Box sx={styles.avatarBox}>
               <Typography variant="h4" fontWeight={700} sx={{ color: "#fff" }}>
                 {customer?.name?.charAt(0).toUpperCase()}
@@ -128,15 +194,11 @@ const ProfilePage = () => {
             <Box>
               <Typography variant="h6" fontWeight={700}>{customer?.name}</Typography>
               <Typography variant="body2" color="text.secondary">{customer?.phone}</Typography>
-              <Chip
-                label="Pelanggan Aktif"
-                size="small"
-                sx={{ bgcolor: "#E8F5E9", color: "#2E7D32", fontWeight: 600, mt: 0.75 }}
-              />
+              <Chip label="Pelanggan Aktif" size="small" sx={styles.activeChip} />
             </Box>
           </Box>
 
-          <Divider sx={{ borderColor: "#F0E6DC", mb: 1 }} />
+          <Divider sx={{ ...styles.divider, mb: 1 }} />
 
           {!editing ? (
             <>
@@ -152,7 +214,7 @@ const ProfilePage = () => {
                 </Box>
               </Box>
 
-              <Divider sx={{ borderColor: "#F0E6DC" }} />
+              <Divider sx={styles.divider} />
 
               <Box sx={styles.infoRow}>
                 <Box sx={styles.iconBox}>
@@ -160,18 +222,14 @@ const ProfilePage = () => {
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Typography variant="caption" color="text.secondary">Nomor Telepon</Typography>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.25 }}>
+                  <Box sx={styles.phoneRow}>
                     <Typography variant="body2" fontWeight={600}>{customer?.phone}</Typography>
-                    <Chip
-                      label="Tidak dapat diubah"
-                      size="small"
-                      sx={{ fontSize: 10, height: 18, bgcolor: "#F5F5F5", color: "text.secondary" }}
-                    />
+                    <Chip label="Tidak dapat diubah" size="small" sx={styles.readOnlyChip} />
                   </Box>
                 </Box>
               </Box>
 
-              <Divider sx={{ borderColor: "#F0E6DC" }} />
+              <Divider sx={styles.divider} />
 
               <Box sx={styles.infoRow}>
                 <Box sx={styles.iconBox}>
@@ -185,7 +243,7 @@ const ProfilePage = () => {
                 </Box>
               </Box>
 
-              <Divider sx={{ borderColor: "#F0E6DC" }} />
+              <Divider sx={styles.divider} />
 
               <Box sx={styles.infoRow}>
                 <Box sx={styles.iconBox}>
@@ -199,24 +257,19 @@ const ProfilePage = () => {
                 </Box>
               </Box>
 
-              <Divider sx={{ borderColor: "#F0E6DC", mb: 2.5 }} />
+              <Divider sx={{ ...styles.divider, mb: 2.5 }} />
 
               <Button
                 variant="outlined"
                 startIcon={<Edit />}
                 onClick={() => setEditing(true)}
-                sx={{
-                  borderRadius: 100,
-                  borderColor: "#F0E6DC",
-                  color: "primary.main",
-                  fontWeight: 600,
-                }}
+                sx={styles.editBtn}
               >
                 Ubah Informasi
               </Button>
             </>
           ) : (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+            <Box sx={styles.editForm}>
               <TextField
                 label="Nama Lengkap"
                 fullWidth
@@ -238,13 +291,13 @@ const ProfilePage = () => {
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
               />
-              <Box sx={{ display: "flex", gap: 1.5, mt: 1 }}>
+              <Box sx={styles.formBtns}>
                 <Button
                   variant="contained"
                   startIcon={<Save />}
                   onClick={handleSave}
                   disabled={saving}
-                  sx={{ borderRadius: 100, flex: 1 }}
+                  sx={styles.saveBtn}
                 >
                   {saving ? "Menyimpan..." : "Simpan"}
                 </Button>
@@ -252,7 +305,7 @@ const ProfilePage = () => {
                   variant="outlined"
                   startIcon={<Close />}
                   onClick={handleCancel}
-                  sx={{ borderRadius: 100, borderColor: "#F0E6DC", color: "text.secondary", flex: 1 }}
+                  sx={styles.cancelEditBtn}
                 >
                   Batal
                 </Button>
@@ -263,22 +316,11 @@ const ProfilePage = () => {
       </Card>
 
       <Card elevation={0}>
-        <CardContent sx={{ p: 3 }}>
+        <CardContent sx={styles.cardContent}>
           <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 2 }}>
             Pengaturan Akun
           </Typography>
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={logout}
-            sx={{
-              borderRadius: 100,
-              borderColor: "#FFCDD2",
-              color: "#D32F2F",
-              fontWeight: 600,
-              "&:hover": { bgcolor: "#FFEBEE", borderColor: "#D32F2F" }
-            }}
-          >
+          <Button variant="outlined" fullWidth onClick={logout} sx={styles.logoutBtn}>
             Keluar dari Akun
           </Button>
         </CardContent>
